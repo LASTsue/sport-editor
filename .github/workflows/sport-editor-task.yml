@@ -6,7 +6,7 @@ name: sport-editor-task
 on:
   workflow_dispatch: # 手动触发
   schedule: # 计划任务触发 (UTC时区 H+8)
-    - cron: "30 6 * * *" 
+    - cron: "30 13 * * *" 
 
 jobs:
   run-sport-editor:
@@ -41,6 +41,6 @@ jobs:
           XIAOMI_AMAZFIT_PASSWORD: ${{secrets.XIAOMI_AMAZFIT_PASSWORD}}
           XIAOMI_AMAZFIT_USER_ID: ${{secrets.XIAOMI_AMAZFIT_USER_ID}}
           XIAOMI_AMAZFIT_APP_TOKEN: ${{secrets.XIAOMI_AMAZFIT_APP_TOKEN}}
-          STED_SIZE_RANGE: ${{secrets.RANGE_0}}
+          STED_SIZE_RANGE: ${{secrets.RANGE_1}}
 
         run: npm run start
