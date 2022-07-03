@@ -1,36 +1,44 @@
-# This is a basic workflow to help you get started with Actions
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: CI
+name: sport-editor-task
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  workflow_dispatch: # 手动触发
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  run-sport-editor:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    strategy:
+      matrix:
+        node-version: [14.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      # 设置服务器时区为东八区
+      - name: Set time zone
+        run: sudo timedatectl set-timezone 'Asia/Shanghai'
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      # Node.js 环境
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # 安装Npm依赖
+      - name: Install dependencies
+        run: npm install
+
+      # 运行
+      - name: Run APP
+        env:
+          XIAOMI_AMAZFIT_USERNAME: ${{secrets.XIAOMI_AMAZFIT_USERNAME}}
+          XIAOMI_AMAZFIT_PASSWORD: ${{secrets.XIAOMI_AMAZFIT_PASSWORD}}
+          XIAOMI_AMAZFIT_USER_ID: ${{secrets.XIAOMI_AMAZFIT_USER_ID}}
+          XIAOMI_AMAZFIT_APP_TOKEN: ${{secrets.XIAOMI_AMAZFIT_APP_TOKEN}}
+          STED_SIZE_RANGE: ${{secrets.RANGE_0}}
+
+        run: npm run start
